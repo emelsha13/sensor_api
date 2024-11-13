@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Sensor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #8bc34a;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        #data {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h2, h3 {
+            font-size: 1.8em;
+            margin: 20px 0 10px;
+        }
+
+        h2 {
+            color: #4b8606;
+        }
+
+        h3 {
+            color: #fbc02d;
+        }
+
+        .data-item {
+            background-color: #263238;
+            color: #cfd8dc;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 12px;
+            display: inline-block;
+            width: 140px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .data-item strong {
+            color: #80cbc4;
+        }
+
+        .summary-item {
+            background-color: #2e7d32;
+            color: #e8f5e9;
+            border-radius: 10px;
+            padding: 15px;
+            width: 180px;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 1em;
+            margin: 10px 0;
+        }
+
+        .summary-item p {
+            color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="data">Loading data...</div>
+
+    <script>
+        fetch('http://localhost/sensor_api/data.php')
+            .then(response => response.json())
+            .then(data => {
+                let output = `<h2>Data Suhu dan Kelembapan</h2>`;
+                
+                data.data.forEach(item => {
+                    output += `
+                    <div class="data-item">
+                        <p><strong>Suhu:</strong> ${item.suhu}°C</p>
+                        <p><strong>humid:</strong> ${item.humid}%</p>
+                        <p><strong>Tanggal:</strong> ${item.timestamp}</p>
+                    </div>`;
+                });
+
+                output += `<h3>Ringkasan</h3>`;
+                output += `
+                    <div class="summary-item">
+                        <p><strong>Suhu Maksimum:</strong> ${data.summary.suhumax}°C</p>
+                        <p><strong>Suhu Minimum:</strong> ${data.summary.suhumin}°C</p>
+                        <p><strong>Suhu Rata-rata:</strong> ${data.summary.suhurata}°C</p>
+                    </div>`;
+
+                document.getElementById('data').innerHTML = output;
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('data').innerHTML = 'Error fetching data.';
+            });
+    </script>
+</body>
+</html>
